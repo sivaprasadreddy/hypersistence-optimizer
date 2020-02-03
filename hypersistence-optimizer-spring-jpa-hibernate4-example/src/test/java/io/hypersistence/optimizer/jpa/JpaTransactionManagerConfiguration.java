@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.hypersistence.optimizer.HypersistenceOptimizer;
 import io.hypersistence.optimizer.core.config.JpaConfig;
 import io.hypersistence.optimizer.hibernate.decorator.HypersistenceHibernatePersistenceProvider;
-import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -21,7 +21,6 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- *
  * @author Vlad Mihalcea
  */
 @Configuration
@@ -74,7 +73,7 @@ public class JpaTransactionManagerConfiguration {
     public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setPersistenceUnitName(persistenceUnitName());
-        entityManagerFactoryBean.setPersistenceProvider(new HibernatePersistenceProvider());
+        entityManagerFactoryBean.setPersistenceProvider(new HibernatePersistence());
         entityManagerFactoryBean.setDataSource(dataSource());
         entityManagerFactoryBean.setPackagesToScan(packagesToScan());
 
@@ -100,7 +99,7 @@ public class JpaTransactionManagerConfiguration {
     }
 
     @Bean
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory){
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
