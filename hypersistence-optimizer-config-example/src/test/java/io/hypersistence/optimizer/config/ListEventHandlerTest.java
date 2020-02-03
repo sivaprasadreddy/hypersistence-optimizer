@@ -4,7 +4,7 @@ import io.hypersistence.optimizer.HypersistenceOptimizer;
 import io.hypersistence.optimizer.core.config.JpaConfig;
 import io.hypersistence.optimizer.core.event.Event;
 import io.hypersistence.optimizer.core.event.ListEventHandler;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
 import io.hypersistence.optimizer.util.AbstractTest;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class ListEventHandlerTest extends AbstractTest {
 
     @Test
     public void test() {
-        assertEventTriggered(1, EagerFetchingEvent.class);
+        assertEventTriggered(1, Fetching2Event.class);
     }
 
     protected void assertEventTriggered(int expectedCount, Class<? extends Event> eventClass) {

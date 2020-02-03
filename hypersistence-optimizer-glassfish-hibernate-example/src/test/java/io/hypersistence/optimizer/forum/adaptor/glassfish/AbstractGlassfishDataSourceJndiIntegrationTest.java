@@ -4,15 +4,15 @@ import io.hypersistence.optimizer.HypersistenceOptimizer;
 import io.hypersistence.optimizer.core.config.JpaConfig;
 import io.hypersistence.optimizer.core.event.Event;
 import io.hypersistence.optimizer.forum.domain.Post;
-import io.hypersistence.optimizer.hibernate.event.configuration.query.QueryInClauseParameterPaddingEvent;
-import io.hypersistence.optimizer.hibernate.event.configuration.query.QueryPaginationCollectionFetchingEvent;
+import io.hypersistence.optimizer.hibernate.event.configuration.query.Query2Event;
+import io.hypersistence.optimizer.hibernate.event.configuration.query.Query3Event;
 import io.hypersistence.optimizer.hibernate.event.configuration.schema.SchemaGenerationEvent;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.ManyToManyListEvent;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.OneToOneParentSideEvent;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.OneToOneWithoutMapsIdEvent;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
-import io.hypersistence.optimizer.hibernate.event.query.PaginationWithoutOrderByEvent;
-import io.hypersistence.optimizer.hibernate.event.session.SessionTimeoutEvent;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.Association6Event;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.Association7Event;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.Association8Event;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
+import io.hypersistence.optimizer.hibernate.event.query.QueryEvent;
+import io.hypersistence.optimizer.hibernate.event.session.SessionEvent;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +47,13 @@ public abstract class AbstractGlassfishDataSourceJndiIntegrationTest {
 
     @Test
     public void test() throws Exception {
-        assertEventTriggered(2, EagerFetchingEvent.class);
-        assertEventTriggered(1, ManyToManyListEvent.class);
-        assertEventTriggered(1, OneToOneParentSideEvent.class);
-        assertEventTriggered(1, OneToOneWithoutMapsIdEvent.class);
+        assertEventTriggered(2, Fetching2Event.class);
+        assertEventTriggered(1, Association6Event.class);
+        assertEventTriggered(1, Association7Event.class);
+        assertEventTriggered(1, Association8Event.class);
         assertEventTriggered(1, SchemaGenerationEvent.class);
-        assertEventTriggered(1, QueryPaginationCollectionFetchingEvent.class);
-        assertEventTriggered(1, QueryInClauseParameterPaddingEvent.class);
+        assertEventTriggered(1, Query3Event.class);
+        assertEventTriggered(1, Query2Event.class);
 
         doInTransaction(() -> {
             Post post = new Post();
@@ -64,7 +64,7 @@ public abstract class AbstractGlassfishDataSourceJndiIntegrationTest {
         hypersistenceOptimizer.getEvents().clear();
 
         doInTransaction(() -> {
-            assertEventTriggered(0, PaginationWithoutOrderByEvent.class);
+            assertEventTriggered(0, QueryEvent.class);
 
             List<Post> posts = getEntityManager().createQuery(
                 "select p " +
@@ -74,16 +74,10 @@ public abstract class AbstractGlassfishDataSourceJndiIntegrationTest {
 
             assertEquals(1, posts.size());
 
-            assertEventTriggered(1, PaginationWithoutOrderByEvent.class);
-
-            try {
-                Thread.sleep(25);
-            } catch (InterruptedException e) {
-                Thread.interrupted();
-            }
+            assertEventTriggered(1, QueryEvent.class);
         });
 
-        assertEventTriggered(1, SessionTimeoutEvent.class);
+        assertEventTriggered(1, SessionEvent.class);
     }
 
     private void doInTransaction(VoidCallable callable) {

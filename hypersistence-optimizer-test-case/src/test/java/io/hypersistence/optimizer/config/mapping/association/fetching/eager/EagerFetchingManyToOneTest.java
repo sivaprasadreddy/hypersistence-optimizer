@@ -1,6 +1,6 @@
 package io.hypersistence.optimizer.config.mapping.association.fetching.eager;
 
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
 import io.hypersistence.optimizer.util.AbstractHypersistenceOptimizerTest;
 
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ public class EagerFetchingManyToOneTest extends AbstractHypersistenceOptimizerTe
 
     @Override
     protected void verify() {
-        assertEventTriggered(1, EagerFetchingEvent.class);
+        assertEventTriggered(1, Fetching2Event.class);
     }
 
     @Entity(name = "Post")

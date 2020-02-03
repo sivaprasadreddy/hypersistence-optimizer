@@ -5,7 +5,7 @@ import io.hypersistence.optimizer.core.config.JpaConfig;
 import io.hypersistence.optimizer.core.event.ChainEventHandler;
 import io.hypersistence.optimizer.core.event.Event;
 import io.hypersistence.optimizer.core.event.ListEventHandler;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
 import io.hypersistence.optimizer.util.AbstractTest;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class AddEventHandlerTest extends AbstractTest {
             new JpaConfig(entityManagerFactory())
                 .addEventHandler(
                     event -> {
-                        tipsUrls.add(event.getInfoUrl());
+                        tipsUrls.add(event.getClass().getSimpleName());
                     }
                 )
         );
@@ -49,7 +49,7 @@ public class AddEventHandlerTest extends AbstractTest {
 
     @Test
     public void test() {
-        assertEventTriggered(1, EagerFetchingEvent.class);
+        assertEventTriggered(1, Fetching2Event.class);
 
         assertFalse(tipsUrls.isEmpty());
     }
