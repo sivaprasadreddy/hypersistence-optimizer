@@ -14,18 +14,15 @@ import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataBuilder;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.SessionFactoryBuilder;
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
 import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -106,57 +103,29 @@ public abstract class AbstractTest {
     }
 
     private SessionFactory newSessionFactory() {
-        final BootstrapServiceRegistryBuilder bsrb = new BootstrapServiceRegistryBuilder()
-            .enableAutoClose();
-
-        final BootstrapServiceRegistry bsr = bsrb.build();
-
-        final StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder(bsr)
-            .applySettings(properties())
-            .build();
-
-        final MetadataSources metadataSources = new MetadataSources(serviceRegistry);
-
-        for (Class annotatedClass : entities()) {
-            metadataSources.addAnnotatedClass(annotatedClass);
+        Properties properties = properties();
+        Configuration configuration = new Configuration().addProperties(properties);
+        for (Class<?> entityClass : entities()) {
+            configuration.addAnnotatedClass(entityClass);
         }
-
-        String[] packages = packages();
-        if (packages != null) {
-            for (String annotatedPackage : packages) {
-                metadataSources.addPackage(annotatedPackage);
-            }
-        }
-
         String[] resources = resources();
         if (resources != null) {
             for (String resource : resources) {
-                metadataSources.addResource(resource);
+                configuration.addResource(resource);
             }
         }
 
-        final MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder();
-        metadataBuilder.enableNewIdentifierGeneratorSupport(true);
-
-        MetadataImplementor metadata = (MetadataImplementor) metadataBuilder.build();
-
-        final SessionFactoryBuilder sfb = metadata.getSessionFactoryBuilder();
-        Interceptor interceptor = interceptor();
-        if (interceptor != null) {
-            sfb.applyInterceptor(interceptor);
-        }
-
-        return sfb.build();
+        return configuration.buildSessionFactory();
     }
 
     protected EntityManagerFactory newEntityManagerFactory() {
         PersistenceUnitInfo persistenceUnitInfo = persistenceUnitInfo(getClass().getSimpleName());
         Map<String, Object> configuration = new HashMap<String, Object>();
-        configuration.put(AvailableSettings.INTERCEPTOR, interceptor());
 
         EntityManagerFactoryBuilderImpl entityManagerFactoryBuilder = new EntityManagerFactoryBuilderImpl(
             new PersistenceUnitInfoDescriptor(persistenceUnitInfo), configuration
         );
+
         return entityManagerFactoryBuilder.build();
     }
 
@@ -237,7 +206,7 @@ public abstract class AbstractTest {
             txn = session.beginTransaction();
 
             result = callable.apply(session);
-            if (txn.getStatus() == TransactionStatus.ACTIVE) {
+            if (txn.isActive()) {
                 txn.commit();
             } else {
                 try {
@@ -247,7 +216,7 @@ public abstract class AbstractTest {
                 }
             }
         } catch (Throwable t) {
-            if (txn != null && txn.getStatus() == TransactionStatus.ACTIVE) {
+            if (txn != null && txn.isActive()) {
                 try {
                     txn.rollback();
                 } catch (Exception e) {
@@ -273,7 +242,7 @@ public abstract class AbstractTest {
             txn = session.beginTransaction();
 
             callable.accept(session);
-            if (txn.getStatus() == TransactionStatus.ACTIVE) {
+            if (txn.isActive()) {
                 txn.commit();
             } else {
                 try {
@@ -283,7 +252,7 @@ public abstract class AbstractTest {
                 }
             }
         } catch (Throwable t) {
-            if (txn != null && txn.getStatus() == TransactionStatus.ACTIVE) {
+            if (txn != null && txn.isActive()) {
                 try {
                     txn.rollback();
                 } catch (Exception e) {
