@@ -182,9 +182,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <hypersistence-optimizer.version>2.0.0</hypersistence-optimizer.version>
+        <hypersistence-optimizer.version>2.2.0-SNAPSHOT</hypersistence-optimizer.version>
 
-        <hibernate.version>5.4.11.Final</hibernate.version>
+        <hibernate.version>5.1.17.Final</hibernate.version>
+
+        <spring.version>4.3.22.RELEASE</spring.version>
 
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
