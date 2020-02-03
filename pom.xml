@@ -41,15 +41,9 @@
     <modules>
 		<module>hypersistence-optimizer-test-case</module>
 		<module>hypersistence-optimizer-config-example</module>
-		<module>hypersistence-optimizer-spring-hibernate-example</module>
-		<module>hypersistence-optimizer-spring-hibernate4-example </module>
 		<module>hypersistence-optimizer-spring-hibernate3-example </module>
-		<module>hypersistence-optimizer-spring-jpa-example</module>
-		<module>hypersistence-optimizer-spring-jpa-hibernate4-example</module>
 		<module>hypersistence-optimizer-spring-jpa-hibernate3-example</module>
-		<module>hypersistence-optimizer-spring-boot-example</module>
-		<module>hypersistence-optimizer-glassfish-hibernate-example</module>
-		<module>hypersistence-optimizer-glassfish-hibernate4-example</module>
+        <module>hypersistence-optimizer-glassfish-hibernate4-example</module>
     </modules>
 
     <dependencies>
@@ -95,6 +89,12 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.21.0-GA</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -182,9 +182,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <hypersistence-optimizer.version>2.0.0</hypersistence-optimizer.version>
+        <hypersistence-optimizer.version>2.2.0-SNAPSHOT</hypersistence-optimizer.version>
 
-        <hibernate.version>5.4.11.Final</hibernate.version>
+        <hibernate.version>3.5.6-Final</hibernate.version>
+
+        <spring.version>3.2.18.RELEASE</spring.version>
 
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
