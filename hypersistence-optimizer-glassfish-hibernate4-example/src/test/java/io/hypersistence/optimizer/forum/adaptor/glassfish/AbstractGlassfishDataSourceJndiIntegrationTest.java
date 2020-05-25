@@ -7,8 +7,8 @@ import io.hypersistence.optimizer.forum.domain.Post;
 import io.hypersistence.optimizer.hibernate.event.configuration.schema.SchemaGenerationEvent;
 import io.hypersistence.optimizer.hibernate.event.mapping.association.Association6Event;
 import io.hypersistence.optimizer.hibernate.event.mapping.association.Association7Event;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.Association8Event;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.OneToOneWithoutMapsIdEvent;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
 import io.hypersistence.optimizer.hibernate.event.query.QueryEvent;
 import io.hypersistence.optimizer.hibernate.event.session.SessionEvent;
 import org.jboss.arquillian.junit.Arquillian;
@@ -45,10 +45,10 @@ public abstract class AbstractGlassfishDataSourceJndiIntegrationTest {
 
     @Test
     public void test() throws Exception {
-        assertEventTriggered(2, Fetching2Event.class);
+        assertEventTriggered(2, EagerFetchingEvent.class);
         assertEventTriggered(1, Association6Event.class);
         assertEventTriggered(1, Association7Event.class);
-        assertEventTriggered(1, Association8Event.class);
+        assertEventTriggered(1, OneToOneWithoutMapsIdEvent.class);
         assertEventTriggered(1, SchemaGenerationEvent.class);
 
         doInTransaction(() -> {

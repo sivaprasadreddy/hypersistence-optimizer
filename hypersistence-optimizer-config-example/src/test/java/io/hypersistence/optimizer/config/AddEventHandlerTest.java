@@ -2,10 +2,8 @@ package io.hypersistence.optimizer.config;
 
 import io.hypersistence.optimizer.HypersistenceOptimizer;
 import io.hypersistence.optimizer.core.config.JpaConfig;
-import io.hypersistence.optimizer.core.event.ChainEventHandler;
 import io.hypersistence.optimizer.core.event.Event;
-import io.hypersistence.optimizer.core.event.ListEventHandler;
-import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.Fetching2Event;
+import io.hypersistence.optimizer.hibernate.event.mapping.association.fetching.EagerFetchingEvent;
 import io.hypersistence.optimizer.util.AbstractTest;
 import org.junit.Test;
 
@@ -14,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
@@ -49,7 +46,7 @@ public class AddEventHandlerTest extends AbstractTest {
 
     @Test
     public void test() {
-        assertEventTriggered(1, Fetching2Event.class);
+        assertEventTriggered(1, EagerFetchingEvent.class);
 
         assertFalse(tipsUrls.isEmpty());
     }
